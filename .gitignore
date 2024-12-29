@@ -1,3 +1,4 @@
 .env
 pages
 scripts
+.DS_Store
