@@ -23,10 +23,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.th.ThaiAnalyzer;
 import org.apache.lucene.demo.knn.DemoEmbeddings;
 import org.apache.lucene.demo.knn.KnnVectorDict;
@@ -53,15 +55,26 @@ import org.apache.lucene.util.IOUtils;
 /** Simple command-line based search demo. */
 public class SearchFilesWithMoreInfo {
 
-  private static List<String> japanPrefectures = List.of(
-		  "Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima",
-		  "Ibaraki", "Tochigi", "Gunma", "Saitama", "Chiba", "Tokyo", "Kanagawa",
-		  "Niigata", "Toyama", "Ishikawa", "Fukui", "Yamanashi", "Nagano", "Gifu",
-		  "Shizuoka", "Aichi", "Mie", "Shiga", "Kyoto", "Osaka", "Hyogo", "Nara",
-		  "Wakayama", "Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi",
-		  "Tokushima", "Kagawa", "Ehime", "Kochi", "Fukuoka", "Saga", "Nagasaki",
-		  "Kumamoto", "Oita", "Miyazaki", "Kagoshima", "Okinawa"
-		);
+//  private static List<String> japanPrefectures = List.of(
+//		  "hokkaido", "aomori", "iwate", "miyagi", "akita", "yamagata", "fukushima",
+//		  "ibaraki", "tochigi", "gunma", "saitama", "chiba", "tokyo", "kanagawa",
+//		  "niigata", "toyama", "ishikawa", "fukui", "yamanashi", "nagano", "gifu",
+//		  "shizuoka", "aichi", "mie", "shiga", "kyoto", "osaka", "hyogo", "nara",
+//		  "wakayama", "tottori", "shimane", "okayama", "hiroshima", "yamaguchi",
+//		  "tokushima", "kagawa", "ehime", "kochi", "fukuoka", "saga", "nagasaki",
+//		  "kumamoto", "oita", "miyazaki", "kagoshima", "okinawa"
+//		);
+//	  
+
+  private static List<String> japanPrefectures = Arrays.asList(
+          "Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima",
+          "Ibaraki", "Tochigi", "Gunma", "Saitama", "Chiba", "Tokyo", "Kanagawa",
+          "Niigata", "Toyama", "Ishikawa", "Fukui", "Yamanashi", "Nagano", "Gifu",
+          "Shizuoka", "Aichi", "Mie", "Shiga", "Kyoto", "Osaka", "Hyogo", "Nara",
+          "Wakayama", "Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi",
+          "Tokushima", "Kagawa", "Ehime", "Kochi", "Fukuoka", "Saga", "Nagasaki",
+          "Kumamoto", "Oita", "Miyazaki", "Kagoshima", "Okinawa"
+      );
 	  
 	
   private SearchFilesWithMoreInfo() {}
@@ -123,7 +136,7 @@ public class SearchFilesWithMoreInfo {
 
     DirectoryReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(index)));
     IndexSearcher searcher = new IndexSearcher(reader);
-    analyzer = new ThaiAnalyzer();
+    analyzer = new SimpleAnalyzer();
     KnnVectorDict vectorDict = null;
     if (knnVectors > 0) {
       vectorDict = new KnnVectorDict(reader.directory(), IndexFiles.KNN_DICT);
@@ -152,7 +165,7 @@ public class SearchFilesWithMoreInfo {
         break;
       }
       
-      String searchField = japanPrefectures.contains(line) ? "prefecture" : "contents";
+      String searchField = "contents";
 
 	  parser = new QueryParser(searchField, analyzer);
 	  Query query = parser.parse(line);

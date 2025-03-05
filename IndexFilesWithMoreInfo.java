@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.th.ThaiAnalyzer;
 import org.apache.lucene.benchmark.byTask.feeds.DemoHTMLParser.Parser;
 import org.apache.lucene.demo.knn.DemoEmbeddings;
@@ -134,7 +135,7 @@ public class IndexFilesWithMoreInfo implements AutoCloseable {
       System.out.println("Indexing to directory '" + indexPath + "'...");
 
       Directory dir = FSDirectory.open(Paths.get(indexPath));
-      Analyzer analyzer = new ThaiAnalyzer();
+      Analyzer analyzer = new SimpleAnalyzer();
       IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
 
       if (create) {
