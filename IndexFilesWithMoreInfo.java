@@ -271,12 +271,8 @@ public class IndexFilesWithMoreInfo implements AutoCloseable {
 	        
 	        doc.add(new TextField("title", title, Field.Store.YES));
 
-	        String content = parser.body;
-	        System.out.println("Before footer removal: " + content);
-	        content = content.replaceAll("(?s)<footer.*?>.*?</footer>", "");
-	        content = content.replaceAll("\\s+", " ");
+	        String content = parser.body.replaceAll("\\s+", " ");;
 //	        System.out.println("content: " + content);
-	        System.out.println("After footer removal: " + content);
 	        doc.add(new TextField("contents", content, Field.Store.YES));
 
 	        String url = pathStr.substring(docDir.toString().length() + 1).replace('\\', '/').replace("dummy", "");
@@ -301,20 +297,23 @@ public class IndexFilesWithMoreInfo implements AutoCloseable {
 	            .orElse(null);
 	        
 	        if (foundPrefecture == null) {
-//	            foundPrefecture = japanPrefectures.stream()
-//	                .filter(prefecture -> title.contains(prefecture) || content.contains(prefecture))
-//	                .findFirst()
-//	                .orElse("-");
-//	            
-	            Set<String> mentionedPrefectures = japanPrefectures.stream()
-	            	    .filter(content::contains)
-	            	    .collect(Collectors.toSet());
-
+	            foundPrefecture = japanPrefectures.stream()
+	                .filter(prefecture -> title.contains(prefecture))
+	                .findFirst()
+	                .orElse("-");
+	            
+	            if (foundPrefecture == null) {
+	            	Set<String> mentionedPrefectures = japanPrefectures.stream()
+	            			.filter(content::contains)
+	            			.collect(Collectors.toSet());
+	            	
 	            	if (!mentionedPrefectures.isEmpty()) {
-	            	    foundPrefecture = String.join(", ", mentionedPrefectures);
+	            		foundPrefecture = mentionedPrefectures.size() > 12 ? "-" : String.join(", ", mentionedPrefectures);
 	            	} else {
 	            		foundPrefecture = "-";
 	            	}
+	            	
+	            }
 	        }
 
 //	        System.out.println("prefecture: " + foundPrefecture);
